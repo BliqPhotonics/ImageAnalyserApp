@@ -12,6 +12,8 @@
 		301CF0A82063E68D00E98404 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 301CF0A72063E68D00E98404 /* Assets.xcassets */; };
 		301CF0AB2063E68D00E98404 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 301CF0A92063E68D00E98404 /* Main.storyboard */; };
 		301CF0B72063E68D00E98404 /* ImageAnalyserAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301CF0B62063E68D00E98404 /* ImageAnalyserAppTests.swift */; };
+		301CF0CC2063E7C400E98404 /* ImageAnalyser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 301CF0CB2063E7C400E98404 /* ImageAnalyser.framework */; };
+		301CF0CD2063E7C400E98404 /* ImageAnalyser.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 301CF0CB2063E7C400E98404 /* ImageAnalyser.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,6 +26,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		301CF0CE2063E7C400E98404 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				301CF0CD2063E7C400E98404 /* ImageAnalyser.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		301CF0A02063E68D00E98404 /* ImageAnalyserApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageAnalyserApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		301CF0A32063E68D00E98404 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -35,6 +51,7 @@
 		301CF0B22063E68D00E98404 /* ImageAnalyserAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageAnalyserAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		301CF0B62063E68D00E98404 /* ImageAnalyserAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAnalyserAppTests.swift; sourceTree = "<group>"; };
 		301CF0B82063E68D00E98404 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		301CF0CB2063E7C400E98404 /* ImageAnalyser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ImageAnalyser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				301CF0CC2063E7C400E98404 /* ImageAnalyser.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,6 +76,7 @@
 		301CF0972063E68D00E98404 = {
 			isa = PBXGroup;
 			children = (
+				301CF0CB2063E7C400E98404 /* ImageAnalyser.framework */,
 				301CF0A22063E68D00E98404 /* ImageAnalyserApp */,
 				301CF0B52063E68D00E98404 /* ImageAnalyserAppTests */,
 				301CF0A12063E68D00E98404 /* Products */,
@@ -78,6 +97,7 @@
 			children = (
 				301CF0A32063E68D00E98404 /* AppDelegate.swift */,
 				301CF0A52063E68D00E98404 /* ViewController.swift */,
+				302AE08E20640B8000F39C9D /* Resources */,
 				301CF0A72063E68D00E98404 /* Assets.xcassets */,
 				301CF0A92063E68D00E98404 /* Main.storyboard */,
 				301CF0AC2063E68D00E98404 /* Info.plist */,
@@ -95,6 +115,13 @@
 			path = ImageAnalyserAppTests;
 			sourceTree = "<group>";
 		};
+		302AE08E20640B8000F39C9D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -105,6 +132,7 @@
 				301CF09C2063E68D00E98404 /* Sources */,
 				301CF09D2063E68D00E98404 /* Frameworks */,
 				301CF09E2063E68D00E98404 /* Resources */,
+				301CF0CE2063E7C400E98404 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
