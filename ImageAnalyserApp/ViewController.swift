@@ -19,9 +19,10 @@ extension NSImage.Name {
 
 enum FilterStore: Int {
     case grayscale
+    case divide
     case hilo
     
-    static var allCases: [FilterStore] { return [.grayscale, .hilo] }
+    static var allCases: [FilterStore] { return [.grayscale, .divide, .hilo] }
 }
 
 class ViewController: NSViewController {
@@ -33,11 +34,23 @@ class ViewController: NSViewController {
     @IBOutlet weak var secondInputImageView: NSImageView!
     @IBOutlet weak var processedImageView: NSImageView!
     
-    var inputImage1: NSImage?
-    var inputImage2: NSImage?
-    var processedImage: NSImage?
+    var inputImage1: NSImage? {
+        didSet {
+            firstInputImageView.image = inputImage1
+        }
+    }
+    var inputImage2: NSImage? {
+        didSet {
+            secondInputImageView.image = inputImage2
+        }
+    }
+    var processedImage: NSImage? {
+        didSet {
+            processedImageView.image = processedImage
+        }
+    }
     
-    var currentFilter: FilterStore = .grayscale
+    var currentFilter: FilterStore = .hilo
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,63 +61,76 @@ class ViewController: NSViewController {
         for filter in FilterStore.allCases {
             filterSelection.addItem(withTitle: "\(filter)")
         }
-        
         filterSelection.selectItem(at: currentFilter.hashValue)
-        debugPrint("\(currentFilter)")
         
-//        assignImage()
+        assignImage()
+        processCurrentFilter()
+        
     }
     
     private func assignImage() {
-        
-        
         processedImage = nil
         
         switch currentFilter {
         case .grayscale:
             inputImage1 = NSImage(named: NSImage.Name.imageForGrayscale)
             inputImage2 = nil
-        case .hilo:
+        case .hilo, .divide:
             inputImage1 = NSImage(named: NSImage.Name.imageUniform)
             inputImage2 = NSImage(named: NSImage.Name.imageSpeckle)
         }
-        
-        firstInputImageView.image = inputImage1
-        secondInputImageView.image = inputImage2
-        
-        processedImageView.image = processedImage
     }
 
     @IBAction func selectFilter(_ sender: NSPopUpButton) {
-        currentFilter = FilterStore(rawValue: sender.indexOfSelectedItem) ?? .grayscale
-        debugPrint("Selected \(currentFilter) filter")
+        
+        currentFilter = FilterStore(rawValue: filterSelection.indexOfSelectedItem) ?? .grayscale
         
         assignImage()
         
+        processCurrentFilter()
+        
+    }
+    
+    func processCurrentFilter() {
+        debugPrint("Processing Image with \(currentFilter)")
         switch currentFilter {
         case .grayscale:
             processGrayscale()
+        case .divide:
+            processDivide()
         case .hilo:
             processHilo()
         }
-        
     }
     
     private func processGrayscale() {
-        debugPrint("Processing Image with \(currentFilter)")
-        guard let data = inputImage1?.tiffRepresentation else {
-            debugPrint("No Image to process")
-            return
-        }
-        let bitmap = NSBitmapImageRep(data: data)
-        guard let outBitmap = analyser.computeGrayscaleFrom(bitmap: bitmap), let cgImage = outBitmap.cgImage else { return }
+        processedImage = imageFrom(bitmap: analyser.computeGrayscaleFrom(bitmap: bitmapFrom(image: inputImage1)))
+    }
+    
+    private func processDivide() {
+        guard let bitmapUniform = bitmapFrom(image: inputImage1), let bitmapSpeckle = bitmapFrom(image: inputImage2) else { return }
         
-        processedImage = NSImage(cgImage: cgImage, size: outBitmap.size)
-        processedImageView.image = processedImage
+        processedImage = imageFrom(bitmap: analyser.imageDivideMPS(bitmap1: bitmapUniform, bitmap2: bitmapSpeckle) )
+//        processedImage = imageFrom(bitmap: analyser.imageSubstractMPS(bitmap1: bitmapUniform, bitmap2: bitmapSpeckle) )
     }
     
     private func processHilo() {
-        debugPrint("Processing Image with \(currentFilter)")
+        guard let bitmapUniform = bitmapFrom(image: inputImage1), let bitmapSpeckle = bitmapFrom(image: inputImage2) else { return }
+        
+        processedImage = imageFrom(bitmap: analyser.hiloFrom(bitmapUniform: bitmapUniform, bitmapSpeckle: bitmapSpeckle) )
+    }
+    
+    private func bitmapFrom(image: NSImage?) -> NSBitmapImageRep? {
+        guard let data = image?.tiffRepresentation else {
+            debugPrint("No Image to process")
+            return nil
+        }
+        return NSBitmapImageRep(data: data)
+    }
+    
+    private func imageFrom(bitmap: NSBitmapImageRep? ) -> NSImage? {
+        guard let bitmap = bitmap, let cgImage = bitmap.cgImage else { return nil }
+        return NSImage(cgImage: cgImage, size: bitmap.size)
     }
     
 }
