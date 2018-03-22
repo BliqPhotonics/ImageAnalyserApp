@@ -1,7 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11134"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -673,11 +677,11 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModuleProvider="target"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="ImageAnalyserApp" customModuleProvider="target"/>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="0.0"/>
+            <point key="canvasLocation" x="76" y="-353"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
@@ -688,7 +692,7 @@
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
-			<connections>
+                        <connections>
                             <outlet property="delegate" destination="B8D-0N-5wS" id="98r-iN-zZc"/>
                         </connections>
                     </window>
@@ -698,20 +702,125 @@
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="250"/>
+            <point key="canvasLocation" x="75" y="-116"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
-                <viewController id="XfG-lQ-9wD" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="ImageAnalyserApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1718" height="1434"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-Rn-xoT">
+                                <rect key="frame" x="20" y="240" width="1678" height="1174"/>
+                                <subviews>
+                                    <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wby-18-ndX">
+                                        <rect key="frame" x="0.0" y="0.0" width="496" height="1174"/>
+                                        <subviews>
+                                            <imageView focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jCS-Tp-iPY">
+                                                <rect key="frame" x="-3" y="588" width="502" height="589"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="Bln-TZ-aTV"/>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="YDR-BL-87H"/>
+                                                </constraints>
+                                                <imageCell key="cell" selectable="YES" refusesFirstResponder="YES" focusRingType="none" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="photo" id="dZH-HK-pCQ"/>
+                                            </imageView>
+                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HNt-Tx-QXf">
+                                                <rect key="frame" x="-3" y="-3" width="502" height="589"/>
+                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="photo" id="Gld-Wn-JCn"/>
+                                            </imageView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="HNt-Tx-QXf" firstAttribute="width" secondItem="jCS-Tp-iPY" secondAttribute="width" id="0y3-np-WF1"/>
+                                            <constraint firstItem="HNt-Tx-QXf" firstAttribute="height" secondItem="jCS-Tp-iPY" secondAttribute="height" id="MVJ-B9-eIv"/>
+                                        </constraints>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dOh-vD-8a9">
+                                        <rect key="frame" x="501" y="-3" width="1180" height="1180"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="dOh-vD-8a9" secondAttribute="height" multiplier="1:1" id="Cp9-a7-hrS"/>
+                                        </constraints>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="photo" id="P56-kQ-6ye"/>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="dOh-vD-8a9" firstAttribute="height" secondItem="wby-18-ndX" secondAttribute="height" id="RZM-7J-RAu"/>
+                                </constraints>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                            <box titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="wUd-uo-IuL">
+                                <rect key="frame" x="17" y="16" width="1684" height="206"/>
+                                <view key="contentView" id="SOB-io-Hnc">
+                                    <rect key="frame" x="2" y="2" width="1680" height="202"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ojy-fI-n3s">
+                                            <rect key="frame" x="18" y="158" width="105" height="26"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="100" id="6tm-vV-W8b"/>
+                                            </constraints>
+                                            <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="cYP-rr-qgJ" id="c31-MT-WRC">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" id="uW5-OK-kTJ">
+                                                    <items>
+                                                        <menuItem title="Item 1" state="on" id="cYP-rr-qgJ"/>
+                                                        <menuItem title="Item 2" id="ysa-2A-vus"/>
+                                                        <menuItem title="Item 3" id="Kbt-hK-YOf"/>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                            <connections>
+                                                <action selector="selectFilter:" target="XfG-lQ-9wD" id="InE-MA-ZbJ"/>
+                                            </connections>
+                                        </popUpButton>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="ojy-fI-n3s" firstAttribute="top" secondItem="SOB-io-Hnc" secondAttribute="top" constant="20" id="OIG-21-DBR"/>
+                                        <constraint firstItem="ojy-fI-n3s" firstAttribute="leading" secondItem="SOB-io-Hnc" secondAttribute="leading" constant="20" id="PO8-hj-nXR"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="XJl-Cb-FWU"/>
+                                </constraints>
+                            </box>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Hoa-Rn-xoT" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="3im-9z-T06"/>
+                            <constraint firstAttribute="bottom" secondItem="wUd-uo-IuL" secondAttribute="bottom" constant="20" id="IKi-zr-JFa"/>
+                            <constraint firstAttribute="trailing" secondItem="Hoa-Rn-xoT" secondAttribute="trailing" constant="20" id="VHb-Zd-caT"/>
+                            <constraint firstAttribute="trailing" secondItem="wUd-uo-IuL" secondAttribute="trailing" constant="20" id="ZqX-76-6qx"/>
+                            <constraint firstItem="Hoa-Rn-xoT" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="bho-4u-Tcm"/>
+                            <constraint firstItem="wUd-uo-IuL" firstAttribute="top" secondItem="Hoa-Rn-xoT" secondAttribute="bottom" constant="20" id="tug-Jf-qf7"/>
+                            <constraint firstItem="wUd-uo-IuL" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="zaM-k7-iEs"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="filterSelection" destination="ojy-fI-n3s" id="HJr-qj-JxB"/>
+                        <outlet property="firstInputImageView" destination="jCS-Tp-iPY" id="grO-rL-JZg"/>
+                        <outlet property="processedImageView" destination="dOh-vD-8a9" id="mj2-r5-vl4"/>
+                        <outlet property="secondInputImageView" destination="HNt-Tx-QXf" id="py6-KO-Zgj"/>
+                    </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="655"/>
+            <point key="canvasLocation" x="73" y="894.5"/>
         </scene>
     </scenes>
 </document>
