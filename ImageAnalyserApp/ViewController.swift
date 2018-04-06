@@ -8,6 +8,8 @@
 
 import Cocoa
 import ImageAnalyser
+import RxSwift
+import RxCocoa
 
 extension NSImage.Name {
     static let imageForGrayscale = NSImage.Name("image-3")
@@ -34,28 +36,22 @@ class ViewController: NSViewController {
     @IBOutlet weak var secondInputImageView: NSImageView!
     @IBOutlet weak var processedImageView: NSImageView!
     
-    var inputImage1: NSImage? {
-        didSet {
-            firstInputImageView.image = inputImage1
-        }
-    }
-    var inputImage2: NSImage? {
-        didSet {
-            secondInputImageView.image = inputImage2
-        }
-    }
-    var processedImage: NSImage? {
-        didSet {
-            processedImageView.image = processedImage
-        }
-    }
+    var inputImage1 = Variable<NSImage?>(nil)
+    var inputImage2 = Variable<NSImage?>(nil)
+    var processedImage = Variable<NSImage?>(nil)
     
     var currentFilter: FilterStore = .hilo
+    
+    let bag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        inputImage1.asObservable().bind(to: firstInputImageView.rx.image).disposed(by: bag)
+        inputImage2.asObservable().bind(to: secondInputImageView.rx.image).disposed(by: bag)
+        processedImage.asObservable().bind(to: processedImageView.rx.image).disposed(by: bag)
         
         filterSelection.removeAllItems()
         for filter in FilterStore.allCases {
@@ -65,19 +61,19 @@ class ViewController: NSViewController {
         
         assignImage()
         processCurrentFilter()
-        
     }
     
     private func assignImage() {
-        processedImage = nil
+        
+        processedImage.value = nil
         
         switch currentFilter {
         case .grayscale:
-            inputImage1 = NSImage(named: NSImage.Name.imageForGrayscale)
-            inputImage2 = nil
+            inputImage1.value = NSImage(named: NSImage.Name.imageForGrayscale)
+            inputImage2.value = nil
         case .hilo, .divide:
-            inputImage1 = NSImage(named: NSImage.Name.imageUniform)
-            inputImage2 = NSImage(named: NSImage.Name.imageSpeckle)
+            inputImage1.value = NSImage(named: NSImage.Name.imageUniform)
+            inputImage2.value = NSImage(named: NSImage.Name.imageSpeckle)
         }
     }
 
@@ -104,20 +100,20 @@ class ViewController: NSViewController {
     }
     
     private func processGrayscale() {
-        processedImage = imageFrom(bitmap: analyser.computeGrayscaleFrom(bitmap: bitmapFrom(image: inputImage1)))
+        processedImage.value = imageFrom(bitmap: analyser.computeGrayscaleFrom(bitmap: bitmapFrom(image: inputImage1.value)))
     }
     
     private func processDivide() {
-        guard let bitmapUniform = bitmapFrom(image: inputImage1), let bitmapSpeckle = bitmapFrom(image: inputImage2) else { return }
+        guard let bitmapUniform = bitmapFrom(image: inputImage1.value), let bitmapSpeckle = bitmapFrom(image: inputImage2.value) else { return }
         
-        processedImage = imageFrom(bitmap: analyser.imageDivideMPS(bitmap1: bitmapUniform, bitmap2: bitmapSpeckle) )
-//        processedImage = imageFrom(bitmap: analyser.imageSubstractMPS(bitmap1: bitmapUniform, bitmap2: bitmapSpeckle) )
+        processedImage.value = imageFrom(bitmap: analyser.imageDivideMPS(bitmap1: bitmapUniform, bitmap2: bitmapSpeckle) )
+//        processedImage.value = imageFrom(bitmap: analyser.imageSubstractMPS(bitmap1: bitmapUniform, bitmap2: bitmapSpeckle) )
     }
     
     private func processHilo() {
-        guard let bitmapUniform = bitmapFrom(image: inputImage1), let bitmapSpeckle = bitmapFrom(image: inputImage2) else { return }
+        guard let bitmapUniform = bitmapFrom(image: inputImage1.value), let bitmapSpeckle = bitmapFrom(image: inputImage2.value) else { return }
         
-        processedImage = imageFrom(bitmap: analyser.hiloFrom(bitmapUniform: bitmapUniform, bitmapSpeckle: bitmapSpeckle) )
+        processedImage.value = imageFrom(bitmap: analyser.hiloFrom(bitmapUniform: bitmapUniform, bitmapSpeckle: bitmapSpeckle) )
     }
     
     private func bitmapFrom(image: NSImage?) -> NSBitmapImageRep? {
