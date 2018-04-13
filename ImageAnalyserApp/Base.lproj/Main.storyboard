@@ -688,9 +688,9 @@
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
                     <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="196" y="240" width="480" height="270"/>
+                        <rect key="contentRect" x="196" y="240" width="1500" height="1500"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                        <value key="minSize" type="size" width="1500" height="1000"/>
                         <connections>
                             <outlet property="delegate" destination="B8D-0N-5wS" id="98r-iN-zZc"/>
                         </connections>
@@ -708,11 +708,11 @@
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="ImageAnalyserApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="416" height="473"/>
+                        <rect key="frame" x="0.0" y="0.0" width="794" height="473"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="wUd-uo-IuL">
-                                <rect key="frame" x="5" y="16" width="406" height="206"/>
+                                <rect key="frame" x="17" y="16" width="406" height="206"/>
                                 <view key="contentView" id="SOB-io-Hnc">
                                     <rect key="frame" x="2" y="2" width="402" height="202"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -863,14 +863,6 @@
                                                 <real value="3.4028234663852886e+38"/>
                                             </customSpacing>
                                         </stackView>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U41-35-Dcz">
-                                            <rect key="frame" x="18" y="18" width="166" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title="Draw line on ImageView" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="qiw-MB-46z">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                        </button>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="Iyj-Ej-zCB" firstAttribute="leading" secondItem="SOB-io-Hnc" secondAttribute="leading" constant="20" id="96F-f9-ljC"/>
@@ -883,18 +875,18 @@
                                 </constraints>
                             </box>
                             <stackView distribution="fillEqually" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hoa-Rn-xoT">
-                                <rect key="frame" x="20" y="240" width="376" height="196"/>
+                                <rect key="frame" x="20" y="240" width="754" height="196"/>
                                 <subviews>
                                     <stackView distribution="fillEqually" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wby-18-ndX">
-                                        <rect key="frame" x="0.0" y="44" width="150" height="108"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="400" height="196"/>
                                         <subviews>
                                             <imageView focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jCS-Tp-iPY">
-                                                <rect key="frame" x="9" y="55" width="132" height="56"/>
-                                                <imageCell key="cell" selectable="YES" refusesFirstResponder="YES" focusRingType="none" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="photo" id="dZH-HK-pCQ"/>
+                                                <rect key="frame" x="105" y="99" width="190" height="100"/>
+                                                <imageCell key="cell" selectable="YES" refusesFirstResponder="YES" focusRingType="none" alignment="left" imageScaling="proportionallyUpOrDown" imageFrameStyle="photo" id="dZH-HK-pCQ"/>
                                             </imageView>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HNt-Tx-QXf">
-                                                <rect key="frame" x="9" y="-3" width="132" height="56"/>
-                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="photo" id="Gld-Wn-JCn"/>
+                                                <rect key="frame" x="105" y="-3" width="190" height="100"/>
+                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" imageFrameStyle="photo" id="Gld-Wn-JCn"/>
                                             </imageView>
                                         </subviews>
                                         <visibilityPriorities>
@@ -907,28 +899,17 @@
                                         </customSpacing>
                                     </stackView>
                                     <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NcA-TV-s4O">
-                                        <rect key="frame" x="158" y="21" width="218" height="154"/>
+                                        <rect key="frame" x="408" y="52" width="346" height="92"/>
                                         <subviews>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dOh-vD-8a9">
-                                                <rect key="frame" x="-3" y="101" width="224" height="56"/>
+                                                <rect key="frame" x="-3" y="-3" width="190" height="98"/>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" imageFrameStyle="photo" id="P56-kQ-6ye"/>
                                             </imageView>
-                                            <customView focusRingType="none" translatesAutoresizingMaskIntoConstraints="NO" id="TAu-f0-Cw5" customClass="LineProfileView" customModule="ImageAnalyserApp" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="218" height="96"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="96" id="fvp-eJ-GYb"/>
-                                                </constraints>
-                                            </customView>
                                         </subviews>
-                                        <constraints>
-                                            <constraint firstItem="TAu-f0-Cw5" firstAttribute="width" secondItem="dOh-vD-8a9" secondAttribute="width" id="Lzi-3R-B3B"/>
-                                        </constraints>
                                         <visibilityPriorities>
-                                            <integer value="1000"/>
                                             <integer value="1000"/>
                                         </visibilityPriorities>
                                         <customSpacing>
-                                            <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
@@ -943,7 +924,7 @@
                                 </customSpacing>
                             </stackView>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ojy-fI-n3s">
-                                <rect key="frame" x="171" y="441" width="76" height="26"/>
+                                <rect key="frame" x="360" y="441" width="76" height="26"/>
                                 <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="cYP-rr-qgJ" id="c31-MT-WRC">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
@@ -959,17 +940,66 @@
                                     <action selector="selectFilter:" target="XfG-lQ-9wD" id="InE-MA-ZbJ"/>
                                 </connections>
                             </popUpButton>
+                            <box title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="dAQ-V6-ir7">
+                                <rect key="frame" x="425" y="16" width="352" height="206"/>
+                                <view key="contentView" id="HTs-wv-G44">
+                                    <rect key="frame" x="2" y="2" width="348" height="202"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ubd-fP-GDb">
+                                            <rect key="frame" x="18" y="165" width="53" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Mean: 0" id="qKI-zi-NF9">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XTN-74-iAp">
+                                            <rect key="frame" x="18" y="140" width="41" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Std: 0" id="IUS-jR-Z39">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <customView focusRingType="none" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TAu-f0-Cw5" customClass="LineProfileView" customModule="ImageAnalyserApp" customModuleProvider="target">
+                                            <rect key="frame" x="8" y="8" width="332" height="96"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="96" id="fvp-eJ-GYb"/>
+                                            </constraints>
+                                        </customView>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U41-35-Dcz">
+                                            <rect key="frame" x="18" y="110" width="90" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Line profile" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="qiw-MB-46z">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="TAu-f0-Cw5" firstAttribute="leading" secondItem="HTs-wv-G44" secondAttribute="leading" constant="8" id="Da8-QZ-Afx"/>
+                                        <constraint firstAttribute="trailing" secondItem="TAu-f0-Cw5" secondAttribute="trailing" constant="8" id="eAF-jM-WEk"/>
+                                        <constraint firstAttribute="bottom" secondItem="TAu-f0-Cw5" secondAttribute="bottom" constant="8" id="xTQ-rO-9Jd"/>
+                                    </constraints>
+                                </view>
+                            </box>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="wUd-uo-IuL" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="0z3-9z-g9D"/>
                             <constraint firstItem="Hoa-Rn-xoT" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="3im-9z-T06"/>
-                            <constraint firstAttribute="trailing" secondItem="wUd-uo-IuL" secondAttribute="trailing" constant="8" id="DnN-cj-8RP"/>
+                            <constraint firstItem="wUd-uo-IuL" firstAttribute="centerX" secondItem="wby-18-ndX" secondAttribute="centerX" id="GjH-qx-Wr7"/>
                             <constraint firstAttribute="bottom" secondItem="wUd-uo-IuL" secondAttribute="bottom" constant="20" id="IKi-zr-JFa"/>
                             <constraint firstItem="ojy-fI-n3s" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="KKT-D6-4ve"/>
+                            <constraint firstItem="dAQ-V6-ir7" firstAttribute="width" secondItem="NcA-TV-s4O" secondAttribute="width" id="Mq3-Oq-aQX"/>
+                            <constraint firstItem="dAQ-V6-ir7" firstAttribute="centerX" secondItem="NcA-TV-s4O" secondAttribute="centerX" id="Ns1-AH-MJL"/>
+                            <constraint firstAttribute="bottom" secondItem="dAQ-V6-ir7" secondAttribute="bottom" constant="20" id="Uy6-rg-gD2"/>
                             <constraint firstAttribute="trailing" secondItem="Hoa-Rn-xoT" secondAttribute="trailing" constant="20" id="VHb-Zd-caT"/>
-                            <constraint firstItem="wUd-uo-IuL" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="8" id="WIU-3V-yql"/>
+                            <constraint firstItem="dAQ-V6-ir7" firstAttribute="top" secondItem="Hoa-Rn-xoT" secondAttribute="bottom" constant="20" id="XaT-PX-R8v"/>
                             <constraint firstItem="ojy-fI-n3s" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="8" id="o8T-1L-QbP"/>
                             <constraint firstItem="wUd-uo-IuL" firstAttribute="top" secondItem="Hoa-Rn-xoT" secondAttribute="bottom" constant="20" id="tug-Jf-qf7"/>
+                            <constraint firstItem="wUd-uo-IuL" firstAttribute="width" secondItem="wby-18-ndX" secondAttribute="width" id="yda-5P-8Ji"/>
                             <constraint firstItem="Hoa-Rn-xoT" firstAttribute="top" secondItem="ojy-fI-n3s" secondAttribute="bottom" constant="8" id="yer-7D-Bae"/>
                         </constraints>
                     </view>
@@ -978,10 +1008,10 @@
                         <outlet property="etaLbl" destination="bya-N3-YjM" id="nIM-Un-Lbb"/>
                         <outlet property="etaSlider" destination="r18-NH-XRq" id="wvA-fe-Qpg"/>
                         <outlet property="filterSelection" destination="ojy-fI-n3s" id="HJr-qj-JxB"/>
-                        <outlet property="firstInputImageView" destination="jCS-Tp-iPY" id="grO-rL-JZg"/>
-                        <outlet property="processedImageLineProfileView" destination="TAu-f0-Cw5" id="c8n-a7-e0f"/>
-                        <outlet property="processedImageView" destination="dOh-vD-8a9" id="mj2-r5-vl4"/>
-                        <outlet property="secondInputImageView" destination="HNt-Tx-QXf" id="py6-KO-Zgj"/>
+                        <outlet property="imageLineProfileView" destination="TAu-f0-Cw5" id="c8n-a7-e0f"/>
+                        <outlet property="inputImage1View" destination="jCS-Tp-iPY" id="grO-rL-JZg"/>
+                        <outlet property="inputImage2View" destination="HNt-Tx-QXf" id="py6-KO-Zgj"/>
+                        <outlet property="outImageView" destination="dOh-vD-8a9" id="mj2-r5-vl4"/>
                         <outlet property="targetThicknessLbl" destination="94y-9x-osP" id="SxI-5u-Olc"/>
                         <outlet property="targetThicknessSlider" destination="kfz-iN-ctR" id="7l2-To-lAd"/>
                         <outlet property="waveletGaussiansRatioLbl" destination="aQC-r1-PLD" id="9PK-w0-xTP"/>
@@ -990,7 +1020,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-173.5" y="772.5"/>
+            <point key="canvasLocation" x="264" y="1059.5"/>
         </scene>
     </scenes>
 </document>
