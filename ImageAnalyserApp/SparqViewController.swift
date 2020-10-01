@@ -12,13 +12,13 @@ import RxSwift
 import RxCocoa
 
 extension NSImage.Name {
-    static let imageForGrayscale = NSImage.Name("image-3")
-    static let scr1 = NSImage.Name("scr1")
-    static let scr2 = NSImage.Name("scr2")
-    static let imageSpeckle = NSImage.Name("ImageSpeckle")
-    static let imageUniform = NSImage.Name("ImageUniform")
-    static let imageHilo = NSImage.Name("ImageHilo.png")
-    static let circularGradient = NSImage.Name("CircularGradient")
+    static let imageForGrayscale = "image-4"
+    static let scr1 = "scr1"
+    static let scr2 = "scr2"
+    static let imageSpeckle = "ImageSpeckle"
+    static let imageUniform = "ImageUniform"
+    static let imageHilo = "ImageHilo.png"
+    static let circularGradient = "CircularGradient"
 }
 
 enum FilterStore: Int {
@@ -26,19 +26,22 @@ enum FilterStore: Int {
     case grayscale
     case divide
     case hilo
+    case slam
     
-    static var allCases: [FilterStore] { return [.nothing, .grayscale, .divide, .hilo] }
+    static var allCases: [FilterStore] { return [.nothing, .grayscale, .divide, .hilo, .slam] }
 }
 
-class ViewController: NSViewController {
+class SparqViewController: NSViewController {
     
-    let analyser = ImageAnalyser.sharedInstance
+    let analyser: ImageAnalyser = (try? MetalImageAnalyser.sharedInstance) ?? FakeImageAnalyser.sharedInstance()
     
     @IBOutlet weak var filterSelection: NSPopUpButton!
     
     @IBOutlet weak var inputImage1View: NSImageView!
     @IBOutlet weak var inputImage2View: NSImageView!
     @IBOutlet weak var outImageView: NSImageView!
+   
+    @IBOutlet weak var drawView: DrawView!
     
     @IBOutlet weak var imageLineProfileView: LineProfileView!
     @IBOutlet weak var drawLineOnImageViewBtn: NSButton!
@@ -55,13 +58,74 @@ class ViewController: NSViewController {
     @IBOutlet weak var etaSlider: NSSlider!
     @IBOutlet weak var etaLbl: NSTextField!
     
+    
+    @IBOutlet weak var shotNoiseCorrectionBtn: NSButton!
+    @IBOutlet weak var filterVolumeSlider: NSSlider!
+    @IBOutlet weak var filterVolumeLbl: NSTextField!
+    @IBOutlet weak var cameraGainSlider: NSSlider!
+    @IBOutlet weak var cameraGainLbl: NSTextField!
+    @IBOutlet weak var readoutNoiseSlider: NSSlider!
+    @IBOutlet weak var readoutNoiseLbl: NSTextField!
+    
+    //Load images
+    private var loadedUniformImage: NSImage?
+    private var loadedSpeckleImage: NSImage?
+    
+    
+    @IBOutlet weak var loadUniformImageBtn: NSButton!
+    @IBOutlet weak var uniformImageUrlLbl: NSTextField!
+    @IBOutlet weak var loadSpeckleImageBtn: NSButton!
+    @IBOutlet weak var speckleImageUrlLbl: NSTextField!
+    @IBOutlet weak var useDefaultImagesBtn: NSButton!
+    @IBAction func useDefaultImagesBtnACTION(_ sender: NSButton) {
+        loadedUniformImage = nil
+        loadSpeckleImageBtn = nil
+        
+        assignInputImages()
+        
+        processCurrentFilter()
+    }
+    
+    @IBAction func loadUniformImageBtnACTION(_ sender: NSButton) {
+        guard let url = loadImageUrl() else { return }
+        
+        loadedUniformImage = NSImage(byReferencing: url)
+        
+        assignInputImages()
+        
+        processCurrentFilter()
+    }
+    
+    @IBAction func loadSpeckleImageBtnACTION(_ sender: NSButton) {
+        guard let url = loadImageUrl() else { return }
+        
+        loadedSpeckleImage = NSImage(byReferencing: url)
+        
+        assignInputImages()
+        
+        processCurrentFilter()
+    }
+    
+    private func loadImageUrl() -> URL? {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedFileTypes = ["tiff", "tif", "png"]
+        
+        if panel.runModal() == NSApplication.ModalResponse.OK {
+            return panel.urls.first
+        }
+        return nil
+    }
+    
     var inputImage1 = Variable<NSImage?>(nil)
     var inputImage2 = Variable<NSImage?>(nil)
     var outImage = Variable<NSImage?>(nil)
     
     var isInputImage2Hidden = Variable<Bool>(false)
     
-    var currentFilter: FilterStore = .hilo
+    var currentFilter: FilterStore = .nothing
     
     let disposeBag = DisposeBag()
     
@@ -88,7 +152,7 @@ class ViewController: NSViewController {
         for filter in FilterStore.allCases {
             filterSelection.addItem(withTitle: "\(filter)")
         }
-        filterSelection.selectItem(at: currentFilter.hashValue)
+        filterSelection.selectItem(at: currentFilter.rawValue)
     }
     
     fileprivate func setupDrawLineProfile() {
@@ -141,15 +205,26 @@ class ViewController: NSViewController {
             inputImage1.value = NSImage(named: NSImage.Name.scr1)
             inputImage2.value = NSImage(named: NSImage.Name.scr2)
         case .hilo:
-            inputImage1.value = NSImage(named: NSImage.Name.imageUniform)
-            inputImage2.value = NSImage(named: NSImage.Name.imageSpeckle)
+            if let uniform = loadedUniformImage, let speckle = loadedSpeckleImage {
+                inputImage1.value = uniform
+                inputImage2.value = speckle
+            } else {
+                inputImage1.value = NSImage(named: NSImage.Name.imageUniform)
+                inputImage2.value = NSImage(named: NSImage.Name.imageSpeckle)
+            }
+        case .slam:
+            inputImage1.value = NSImage(named: NSImage.Name.scr1)
+            inputImage2.value = NSImage(named: NSImage.Name.scr2)
         }
     }
 
     fileprivate func setupHiloParametersSlidersAndLabels() {
-        self.setup(slider: targetThicknessSlider, initialValue: hiloParameters.targetThickness)
-        self.setup(slider: waveletGaussiansRatioSlider, initialValue: hiloParameters.waveletGaussiansRatio)
-        self.setup(slider: etaSlider, initialValue: hiloParameters.eta,maxValue: 50.0)
+        self.setup(slider: targetThicknessSlider, initialValue: hiloParameters.targetThickness, maxValue: 20.0)
+        self.setup(slider: waveletGaussiansRatioSlider, initialValue: hiloParameters.waveletGaussiansRatio, maxValue: 20.0)
+        self.setup(slider: etaSlider, initialValue: hiloParameters.eta, maxValue: 20.0)
+        self.setup(slider: filterVolumeSlider, initialValue: hiloParameters.bandPassFilterVolume, maxValue: 0.01, minValue: 0.0001)
+        self.setup(slider: cameraGainSlider, initialValue: hiloParameters.cameraGain, maxValue: 0.01, minValue: 0.0001)
+        self.setup(slider: readoutNoiseSlider, initialValue: hiloParameters.readoutNoise, maxValue: 0.01, minValue: 0.0001)
         
         targetThicknessSlider.rx.value
             .distinctUntilChanged()
@@ -169,27 +244,51 @@ class ViewController: NSViewController {
             .bind(to: self.etaLbl.rx.text)
             .disposed(by: disposeBag)
         
-        Observable.combineLatest(targetThicknessSlider.rx.value.asObservable(), waveletGaussiansRatioSlider.rx.value.asObservable(), etaSlider.rx.value.asObservable()) { [weak self] targetThickness, waveletGaussiansRatio, eta in
+        filterVolumeSlider.rx.value
+            .distinctUntilChanged()
+            .map { self.stringFromNumber(number: $0, significantPlaces: 4) }
+            .bind(to: self.filterVolumeLbl.rx.text)
+            .disposed(by: disposeBag)
+        
+        cameraGainSlider.rx.value
+            .distinctUntilChanged()
+            .map { self.stringFromNumber(number: $0, significantPlaces: 4) }
+            .bind(to: self.cameraGainLbl.rx.text)
+            .disposed(by: disposeBag)
+        
+        readoutNoiseSlider.rx.value
+            .distinctUntilChanged()
+            .map { self.stringFromNumber(number: $0, significantPlaces: 4) }
+            .bind(to: self.readoutNoiseLbl.rx.text)
+            .disposed(by: disposeBag)
+        
+        Observable.combineLatest(targetThicknessSlider.rx.value.asObservable(),
+                                 waveletGaussiansRatioSlider.rx.value.asObservable(),
+                                 etaSlider.rx.value.asObservable(),
+                                 shotNoiseCorrectionBtn.rx.state.asObservable(),
+                                 filterVolumeSlider.rx.value.asObservable(),
+                                 cameraGainSlider.rx.value.asObservable(),
+                                 readoutNoiseSlider.rx.value.asObservable()) { [weak self] targetThickness, waveletGaussiansRatio, eta, doShotNoiseCorrection, filterVolume, cameraGain, readoutNoise in
             
-            self?.hiloParameters = HiLoParameters(targetThickness: targetThickness, eta: eta, waveletGaussiansRatio: waveletGaussiansRatio)
+            self?.hiloParameters = HiLoParameters(targetThickness: targetThickness, eta: eta, waveletGaussiansRatio: waveletGaussiansRatio, doShotNoiseCorrection: doShotNoiseCorrection == .on, bandPassFilterVolume: filterVolume, cameraGain: cameraGain, readoutNoise: readoutNoise)
             
             self?.processCurrentFilter()
             }
-            .debounce(0.1, scheduler: MainScheduler.instance)
+//            .debounce(0.1, scheduler: MainScheduler.instance)
             .subscribe()
             .disposed(by: disposeBag)
         
     }
     
-    fileprivate func setup(slider: NSSlider, initialValue: Double, maxValue: Double = 20.0) {
+    fileprivate func setup(slider: NSSlider, initialValue: Double, maxValue: Double = 20.0, minValue: Double = 0.01) {
         slider.doubleValue = initialValue
         slider.maxValue = maxValue
-        slider.minValue = 0.01
+        slider.minValue = minValue
         slider.altIncrementValue = 0.05
     }
     
-    private func stringFromNumber(number: Double) -> String {
-        return String(format: "%0.2f", number)
+    private func stringFromNumber(number: Double, significantPlaces: Int = 2) -> String {
+        return String(format: "%0.\(significantPlaces)f", number)
     }
     
     
@@ -218,6 +317,9 @@ class ViewController: NSViewController {
         case .hilo:
             isInputImage2Hidden.value = true
             processHilo()
+        case .slam:
+            isInputImage2Hidden.value = false
+            processSlam()
         }
         
         plotImageProfile()
@@ -228,13 +330,23 @@ class ViewController: NSViewController {
     }
     
     private func processGrayscale() {
-        outImage.value = imageFrom(bitmap: analyser.computeGrayscaleFrom(bitmap: bitmapFrom(image: inputImage1.value)))
+        
+        guard let bitmap = bitmapFrom(image: inputImage1.value) else {
+            return
+        }
+        do {
+            let outBitmap = try analyser.computeGrayscaleOf(bitmap: bitmap, channel: .rgb)
+            outImage.value = imageFrom(bitmap: outBitmap)
+        } catch {
+            presentError(error)
+        }
+        
     }
     
     private func processDivide() {
         guard let bitmapUniform = bitmapFrom(image: inputImage1.value), let bitmapSpeckle = bitmapFrom(image: inputImage2.value) else { return }
         
-        let newBitmap = analyser.metalDivide(bitmap1: bitmapUniform, bitmap2: bitmapSpeckle, normalize: true)
+        let newBitmap = try? analyser.computeDivide(bitmap1: bitmapUniform, bitmap2: bitmapSpeckle)
         outImage.value = imageFrom(bitmap: newBitmap)
     }
     
@@ -242,12 +354,25 @@ class ViewController: NSViewController {
         guard let bitmapUniform = bitmapFrom(image: inputImage1.value), let bitmapSpeckle = bitmapFrom(image: inputImage2.value)
             else { return }
         
-        guard let bitmapHiLo = analyser.hiloFrom(bitmapUniform: bitmapUniform, bitmapSpeckle: bitmapSpeckle, parameters: hiloParameters)
+        guard let bitmapHiLo = try? analyser.computeSparqFrom(bitmapUniform: bitmapUniform, bitmapSpeckle: bitmapSpeckle, parameters: hiloParameters)
             else { return }
         
         let imageView = NSImageView(image: imageFrom(bitmap: bitmapHiLo)!)
         self.view.addSubview(imageView)
         outImage.value = imageFrom(bitmap: bitmapHiLo)
+        self.imageLineProfileView.display()
+    }
+    
+    private func processSlam() {
+        guard let bitmapBright = bitmapFrom(image: inputImage1.value), let bitmapDark = bitmapFrom(image: inputImage2.value)
+            else { return }
+        
+        guard let bitmapSlam = try? analyser.computeSlamFrom(bitmapBright: bitmapBright, bitmapDark: bitmapDark, parameters: SlamParameters(g: 1) )
+            else { return }
+        
+        let imageView = NSImageView(image: imageFrom(bitmap: bitmapSlam)!)
+        self.view.addSubview(imageView)
+        outImage.value = imageFrom(bitmap: bitmapSlam)
         self.imageLineProfileView.display()
     }
     
@@ -287,6 +412,10 @@ class ViewController: NSViewController {
     }
     
     fileprivate func plotLineProfileAt(location: NSPoint) {
+        
+        let points = [CGPoint(x: 0, y: 0.5), CGPoint(x: 1, y: 0.5) ]
+        drawView.drawLine(points: points, color: CGColor(red: 1, green: 0, blue: 0, alpha: 1))
+        
         if drawLineOnImageViewBtn.state == NSControl.StateValue.on {
             self.lineProfileRelativeLocation = lineProfileRelativeLocationInImageViewFrom(mouseLocationInWindow:location)
             drawLineAt(relativeLocation: self.lineProfileRelativeLocation)
@@ -314,10 +443,16 @@ class ViewController: NSViewController {
     }
     
     fileprivate func plotImageProfile() {
+
+        return
         if drawLineOnImageViewBtn.state == NSControl.StateValue.on {
-            guard let inputImage1LineData = analyser.lineDataFrom(bitmap: bitmapFrom(image: inputImage1.value), atRelativeHeight: Double(self.lineProfileRelativeLocation)),
-                let outImageLineData = analyser.lineDataFrom(bitmap: bitmapFrom(image: outImage.value), atRelativeHeight: Double(self.lineProfileRelativeLocation)) else { return }
-            imageLineProfileView.setDataPoints(dataPoints: [inputImage1LineData, outImageLineData])
+            
+            
+            guard let bitmap1 = bitmapFrom(image: inputImage1.value),
+                let inputImage1LineData = try? analyser.computeLineDataFrom(bitmap: bitmap1, atRelativeHeight: Double(self.lineProfileRelativeLocation)),
+                let bitmap2 = bitmapFrom(image: outImage.value),
+                let outImageLineData = try? analyser.computeLineDataFrom(bitmap: bitmap2, atRelativeHeight: Double(self.lineProfileRelativeLocation)) else { return }
+            //imageLineProfileView.setDataPoints(dataPoints: [inputImage1LineData, outImageLineData])
         }
     }
     
@@ -325,13 +460,22 @@ class ViewController: NSViewController {
 
 class DrawView: NSView {
     
+    var context: CGContext?
+    
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
+        
+//        self.wantsLayer = true
+//        self.layer?.backgroundColor = CGColor(gray: 0.5, alpha: 1)
+//
+        guard let context = NSGraphicsContext.current?.cgContext else { return }
+        
+        self.context = context
     }
     
     func drawLine(points: [CGPoint], color: CGColor) {
         
-        guard let context = NSGraphicsContext.current?.cgContext else { return }
+        guard let context = self.context else { return }
         
         context.beginPath()
         context.move(to: CGPoint(x: 0, y: 0))
@@ -343,6 +487,7 @@ class DrawView: NSView {
         context.setStrokeColor(color)
         context.setLineWidth(1.0)
         context.strokePath()
+        
     }
     
     fileprivate func normalizeDataPointsToFitInBounds(points: [CGPoint]) -> [CGPoint] {
@@ -419,12 +564,12 @@ class LineProfileView: NSView {
         }
     }
     
-    func setDataPoints(dataPoints: [[UInt8]]) {
+    func setDataPoints(dataPoints: [[Int]]) {
         self.allData = normalizeDataToFitInBounds(data: dataPoints)
         self.display()
     }
     
-    func normalizeDataToFitInBounds(data: [[UInt8]]) -> [[(x: CGFloat, y: CGFloat)]] {
+    func normalizeDataToFitInBounds(data: [[Int]]) -> [[(x: CGFloat, y: CGFloat)]] {
         let height = self.bounds.height
         let width = self.bounds.width
         var normalisedData: [[(x: CGFloat, y: CGFloat)]] = []
